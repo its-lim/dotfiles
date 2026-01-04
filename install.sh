@@ -1,19 +1,26 @@
-# 1. Starship 설치 (공식 스크립트 사용)
+#!/bin/bash
+
+# 현재 스크립트가 있는 폴더 위치를 알아냄 (여기가 중요!)
+DOTFILES_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+echo "📂 Dotfiles 위치: $DOTFILES_DIR"
+
+# 1. Starship 설치
 echo "🚀 Starship 설치 중..."
 curl -sS https://starship.rs/install.sh | sh -s -- -y
 
-# 2. 내 dotfiles의 .zshrc를 홈 디렉토리로 심볼릭 링크 걸기
-# (기존 파일이 있으면 백업 후 덮어씁니다)
+# 2. .zshrc 심볼릭 링크 걸기 (경로 자동 인식)
 if [ -f ~/.zshrc ]; then
     mv ~/.zshrc ~/.zshrc.bak
 fi
-ln -sf ~/dotfiles/.zshrc ~/.zshrc
 
-# 3. 기본 쉘을 zsh로 변경 (Codespaces 유저용)
-# (이미 zsh이면 패스합니다)
+# 여기가 수정된 부분!
+ln -sf "$DOTFILES_DIR/.zshrc" ~/.zshrc
+
+# 3. 쉘 변경 (필요시)
 if [ "$SHELL" != "/usr/bin/zsh" ]; then
-    echo "🐚 기본 쉘을 zsh로 변경합니다..."
+    echo "🐚 zsh로 변경 시도..."
     sudo chsh -s $(which zsh) $(whoami)
 fi
 
-echo "✅ 설정 완료! 터미널을 재시작하면 Starship이 뜹니다."
+echo "✅ 설정 완료! (적용이 안 되면 'source ~/.zshrc'를 입력하세요)"
